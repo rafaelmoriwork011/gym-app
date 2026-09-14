@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: gym
+  profiles:
+    active: ${AMBIENTE}
+
+  datasource:
+    url: jdbc:postgresql://${GYM_DB_HOST}/${GYM_DB_NAME}
+    username: ${GYM_DB_USER}
+    password: ${GYM_DB_PASSWORD}
+    driver-class-name: ${GYM_DB_DRIVER}
