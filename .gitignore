@@ -2,9 +2,8 @@ HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
-!**/src/main/resources/application-local.yml
 !**/src/test/**/target/
-./flyway.conf
+
 
 ### STS ###
 .apt_generated
@@ -33,3 +32,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Local configuration ###
+flyway.conf
+src/main/resources/application-local.yml
