@@ -28,10 +28,15 @@ public class Exercicio {
     private GrupoMuscularEnum grupoMuscular;
 
     @Column(name = "nome", length = 70, nullable = false, unique = true)
+    @EqualsAndHashCode.Include
     private String nome;
 
     @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "equipamento_id")
+    private Equipamento equipamento;
 
     @CreationTimestamp
     @Column(name = "data_inclusao", nullable = false, updatable = false)

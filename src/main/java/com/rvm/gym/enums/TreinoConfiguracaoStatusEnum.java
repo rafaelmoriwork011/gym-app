@@ -10,17 +10,20 @@ import java.util.UUID;
 @AllArgsConstructor
 public enum TreinoConfiguracaoStatusEnum {
 
-    ATIVO(UUID.fromString("e0000000-0000-4000-8000-000000000001"), "Ativo"),
-    FINALIZADO(UUID.fromString("e0000000-0000-4000-8000-000000000002"), "Finalizado");
+    ATIVO(UUID.fromString("68416787-ff4b-4cfb-9a38-2e18ce20e40e"), "Ativo"),
+    FINALIZADO(UUID.fromString("a54984eb-883f-4d84-8277-b9e48f4780d9"), "Finalizado");
 
     private final UUID id;
     private final String descricao;
 
     public static TreinoConfiguracaoStatusEnum fromId(UUID id) {
-        if (id == null) return null;
+        if (id == null) {
+            return null;
+        }
 
         return Arrays.stream(values())
-                     .filter(status -> status.getId().equals(id))
+                     .filter(status -> status.getId()
+                                             .equals(id))
                      .findFirst()
                      .orElseThrow(() -> new IllegalArgumentException("Status de configuração de treino inválido para o ID: " + id));
     }

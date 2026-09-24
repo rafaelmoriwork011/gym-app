@@ -1,9 +1,16 @@
+server:
+  servlet:
+    context-path: /api/v1
+  port: 8080
+
 spring:
+  web:
+    locale: pt_BR
+    locale-resolver: fixed
   application:
     name: gym
   profiles:
     active: ${AMBIENTE}
-
   datasource:
     url: jdbc:postgresql://${GYM_DB_HOST}/${GYM_DB_NAME}
     username: ${GYM_DB_USER}

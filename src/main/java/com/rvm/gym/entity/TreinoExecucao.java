@@ -3,7 +3,6 @@ package com.rvm.gym.entity;
 import com.rvm.gym.enums.TreinoStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,6 +24,7 @@ public class TreinoExecucao {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "treino_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Treino treino;
 
     @Column(name = "treino_status_id", nullable = false)

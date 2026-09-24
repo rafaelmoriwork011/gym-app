@@ -24,6 +24,7 @@ public class Equipamento {
     private UUID id;
 
     @Column(name = "nome", length = 70, nullable = false, unique = true)
+    @EqualsAndHashCode.Include
     private String nome;
 
     @Column(name = "descricao", columnDefinition = "TEXT")

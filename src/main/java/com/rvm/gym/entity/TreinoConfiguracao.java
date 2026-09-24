@@ -1,6 +1,8 @@
 package com.rvm.gym.entity;
 
 import com.rvm.gym.enums.TreinoConfiguracaoStatusEnum;
+import com.rvm.gym.enums.TreinoObjetivoEnum;
+import com.rvm.gym.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -28,10 +30,8 @@ public class TreinoConfiguracao {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
+    @EqualsAndHashCode.Include
     private Usuario usuario;
-
-    @Column(name = "quantidade_treino_semana", nullable = false)
-    private Integer quantidadeTreinoSemana;
 
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
@@ -47,7 +47,21 @@ public class TreinoConfiguracao {
     @Column(name = "treino_configuracao_status_id", nullable = false)
     private TreinoConfiguracaoStatusEnum status;
 
-    @OneToMany(mappedBy = "configuracaoTreino", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "treino_objetivo_id", nullable = false)
+    private TreinoObjetivoEnum objetivo;
+
+    @OneToMany(mappedBy = "treinoConfiguracao", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<TreinoConfiguracaoObjetivo> objetivos = new ArrayList<>();
+    private List<Treino> treinos = new ArrayList<>();
+
+    public void addTreinos(List<Treino> treinos) {
+        for (Treino treino : treinos) {
+            if (this.treinos.contains(treino)) {
+                throw new BusinessException("O treino: " + treino.getNome() + " está duplicado");
+            }
+
+            this.treinos.add(treino);
+            treino.setTreinoConfiguracao(this);
+        }
+    }
 }

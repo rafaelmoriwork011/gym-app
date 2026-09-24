@@ -1,5 +1,6 @@
 package com.rvm.gym.enums;
 
+import com.rvm.gym.exception.BusinessException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,18 +11,20 @@ import java.util.UUID;
 @AllArgsConstructor
 public enum TreinoObjetivoEnum {
 
-    AUMENTO_MASSA_MUSCULAR(UUID.fromString("f0000000-0000-4000-8000-000000000001"), "Aumento de Massa Muscular"),
-    EMAGRECIMENTO(UUID.fromString("f0000000-0000-4000-8000-000000000002"), "Emagrecimento"),
-    CONDICIONAMENTO_FISICO(UUID.fromString("f0000000-0000-4000-8000-000000000003"), "Condicionamento Físico");
+    AUMENTO_MASSA_MUSCULAR(UUID.fromString("48dd94fa-e605-4212-9287-750053c6341b"), "Aumento de Massa Muscular"),
+    CONDICIONAMENTO_FISICO(UUID.fromString("a9eac43d-39d5-4d8e-a966-73b5128b4ba9"), "Condicionamento Físico");
 
     private final UUID id;
     private final String descricao;
 
     public static TreinoObjetivoEnum fromId(UUID id) {
-        if (id == null) return null;
+        if (id == null) {
+            throw new BusinessException("Objetivo para o treino inválido.");
+        }
 
         return Arrays.stream(values())
-                     .filter(obj -> obj.getId().equals(id))
+                     .filter(obj -> obj.getId()
+                                       .equals(id))
                      .findFirst()
                      .orElseThrow(() -> new IllegalArgumentException("Objetivo de treino inválido para o ID: " + id));
     }

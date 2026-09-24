@@ -10,8 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public enum TreinoStatusEnum {
 
-    FINALIZADO(UUID.fromString("d0000000-0000-4000-8000-000000000001"), "Finalizado"),
-    DISPENSADO(UUID.fromString("d0000000-0000-4000-8000-000000000002"), "Dispensado");
+    FINALIZADO(UUID.fromString("a96f1ca5-ed23-46f0-9595-7f3e14524c32"), "Finalizado"),
+    DISPENSADO(UUID.fromString("77dda09a-dcba-4c03-aa52-acb0945d036f"), "Dispensado");
 
     private final UUID id;
     private final String descricao;
