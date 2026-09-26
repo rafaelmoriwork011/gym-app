@@ -1,11 +1,14 @@
 package com.rvm.gym.controller;
 
 import com.rvm.gym.dto.request.ConfiguracaoTreinoRequestDto;
+import com.rvm.gym.dto.response.ValidacaoTreinoRenovacaoResponseDto;
 import com.rvm.gym.service.TreinoConfiguracaoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/configurar-treino")
@@ -13,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class ConfiguracaoTreinoController {
 
     private final TreinoConfiguracaoService configuracaoTreinoService;
-
 
     @PostMapping("/configurar")
     public ResponseEntity configurar(@RequestBody @Valid ConfiguracaoTreinoRequestDto configuracaoTreinoRequestDto) {
@@ -24,27 +26,21 @@ public class ConfiguracaoTreinoController {
                 .build();
     }
 
-    /**
-     * TODO: implementar
-     * Regras: RF05, RF06
-     */
-    @PostMapping("/reconfigurar")
-    public ResponseEntity reconfigurar() {
+    @PostMapping("/reconfigurar/{id}")
+    public ResponseEntity reconfigurar(@PathVariable UUID id) {
+
+        configuracaoTreinoService.reconfigurarTreinoDeUsuario(id);
 
         return ResponseEntity.ok()
                 .build();
     }
 
-    /**
-     * TODO: implementar
-     * Regras: RF06
-     * Responsável por verificar se o treino deve ser renovado
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity verificarRenovacao() {
+    @GetMapping("/verificar-renovacao/{id}")
+    public ResponseEntity<ValidacaoTreinoRenovacaoResponseDto> verificarRenovacao(@PathVariable UUID id) {
 
-        return ResponseEntity.ok()
-                .build();
+        ValidacaoTreinoRenovacaoResponseDto validacaoTreinoRenovacaoResponseDto = this.configuracaoTreinoService.verificarSeTreinoDeveRenovar(id);
+
+        return ResponseEntity.ok(validacaoTreinoRenovacaoResponseDto);
     }
 
 }

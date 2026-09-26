@@ -12,4 +12,15 @@ public class MapeamentoExercicioDto {
 
     private GrupoMuscularEnum grupoMuscular;
     private Integer quantidadeExercicios;
+
+    public void incrementarQuantidadeExercicios() {
+
+        if (this.quantidadeExercicios == null) {
+            this.quantidadeExercicios = 1;
+            return;
+        }
+
+        this.quantidadeExercicios++;
+    }
+
 }

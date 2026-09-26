@@ -60,6 +60,7 @@ CREATE TABLE treino_configuracao (
     treino_configuracao_status_id  UUID NOT NULL,
     treino_objetivo_id             UUID NOT NULL,
     observacao                     TEXT,
+    data_fim                       TIMESTAMP,
     data_inclusao                  TIMESTAMP NOT NULL DEFAULT now(),
     data_alteracao                 TIMESTAMP,
     CONSTRAINT fk_treino_configuracao_usuario FOREIGN KEY (usuario_id) REFERENCES usuario (id),

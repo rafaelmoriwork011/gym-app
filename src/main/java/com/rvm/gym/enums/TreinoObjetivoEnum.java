@@ -28,4 +28,13 @@ public enum TreinoObjetivoEnum {
                      .findFirst()
                      .orElseThrow(() -> new IllegalArgumentException("Objetivo de treino inválido para o ID: " + id));
     }
+
+    public TreinoObjetivoEnum getObjetivoDiferente() {
+
+        if (this == TreinoObjetivoEnum.AUMENTO_MASSA_MUSCULAR) {
+            return TreinoObjetivoEnum.CONDICIONAMENTO_FISICO;
+        }
+
+        return TreinoObjetivoEnum.AUMENTO_MASSA_MUSCULAR;
+    }
 }

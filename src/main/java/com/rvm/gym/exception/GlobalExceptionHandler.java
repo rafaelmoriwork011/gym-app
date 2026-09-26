@@ -3,8 +3,6 @@ package com.rvm.gym.exception;
 import com.rvm.gym.dto.error.ErrorResponseDto;
 import com.rvm.gym.dto.error.FieldErrorResponseDto;
 import com.rvm.gym.helper.ValidationExceptionHelper;
-import com.rvm.gym.mapper.error.ErrorResponseMapper;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,15 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
 
-    private final ErrorResponseMapper errorResponseMapper;
     private final ValidationExceptionHelper validationExceptionHelper;
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException ex, HttpServletRequest request) {
-        ErrorResponseDto dto = errorResponseMapper.toDTO(ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                             .body(dto);
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -44,7 +34,7 @@ public class GlobalExceptionHandler {
                 .fieldErrors(fieldErrors)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                              .body(dto);
     }
 

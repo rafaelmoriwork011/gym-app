@@ -1,12 +1,12 @@
 package com.rvm.gym.dto.request;
 
 
+import com.rvm.gym.validation.TreinoUnico;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +28,7 @@ public class ConfiguracaoTreinoRequestDto {
     private UUID objetivo;
 
     @NotEmpty
-    @UniqueElements
+    @TreinoUnico
     @Valid
     private List<MapeamentoTreinoRequestDto> mapeamentosTreinos;
 

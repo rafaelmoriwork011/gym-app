@@ -2,6 +2,7 @@ package com.rvm.gym.entity;
 
 import com.rvm.gym.enums.TreinoConfiguracaoStatusEnum;
 import com.rvm.gym.enums.TreinoObjetivoEnum;
+import com.rvm.gym.enums.TreinoRenovacaoLimite;
 import com.rvm.gym.exception.BusinessException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,9 @@ public class TreinoConfiguracao {
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
 
+    @Column(name = "data_fim", nullable = false, updatable = false)
+    private LocalDateTime dataFim;
+
     @CreationTimestamp
     @Column(name = "data_inclusao", nullable = false, updatable = false)
     private LocalDateTime dataInclusao;
@@ -54,14 +58,51 @@ public class TreinoConfiguracao {
     @Builder.Default
     private List<Treino> treinos = new ArrayList<>();
 
+
     public void addTreinos(List<Treino> treinos) {
         for (Treino treino : treinos) {
-            if (this.treinos.contains(treino)) {
-                throw new BusinessException("O treino: " + treino.getNome() + " está duplicado");
-            }
-
+            this.verificaDuplicidadeTreinoParaAdicionarAtreinos(treino);
             this.treinos.add(treino);
             treino.setTreinoConfiguracao(this);
         }
     }
+
+    private void verificaDuplicidadeTreinoParaAdicionarAtreinos(Treino treino) {
+        for (Treino treinoConfig : this.treinos) {
+            if (treinoConfig.getOrdem() == treino.getOrdem()) {
+                throw new BusinessException("A ordem de treino: " + treino.getOrdem() + " está duplicado");
+            }
+
+            if (treinoConfig.getNome() == treino.getNome()) {
+                throw new BusinessException("O nome de treino: " + treino.getNome() + " está duplicado");
+            }
+        }
+    }
+
+    public void configuraDataFim() {
+        Integer quantidadeDiasRenovacao = TreinoRenovacaoLimite.QTD_DIAS_PARA_RENOVAR_CONFIGURACAO.getQuantidadeDiasParaRenovarConfiguracao();
+        LocalDateTime dataHoraAtual = LocalDateTime.now();
+        LocalDateTime dataFim = dataHoraAtual.plusDays(quantidadeDiasRenovacao);
+        this.setDataFim(dataFim);
+    }
+
+    public boolean deveRenovar() {
+
+        if (this.status == TreinoConfiguracaoStatusEnum.FINALIZADO) {
+            return true;
+        }
+
+        LocalDateTime dataFim = this.getDataFim();
+        LocalDateTime dataHoraAtual = LocalDateTime.now();
+        return dataFim.isBefore(dataHoraAtual);
+    }
+
+    public void finalizar() {
+        this.status = TreinoConfiguracaoStatusEnum.FINALIZADO;
+    }
+
+    public void atualizarDataAlteracao() {
+        this.dataAlteracao = LocalDateTime.now();
+    }
+
 }

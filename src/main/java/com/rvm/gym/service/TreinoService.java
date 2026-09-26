@@ -5,13 +5,16 @@ import com.rvm.gym.dto.internal.MapeamentoTreinoDto;
 import com.rvm.gym.entity.Exercicio;
 import com.rvm.gym.entity.Treino;
 import com.rvm.gym.entity.TreinoExercicio;
+import com.rvm.gym.enums.GrupoMuscularEnum;
 import com.rvm.gym.enums.TreinoObjetivoEnum;
 import com.rvm.gym.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -53,19 +56,69 @@ public class TreinoService {
         TreinoExercicio treinoExercicioAnterior = null;
         for (MapeamentoExercicioDto mapeamentoExercicioDto : mapeamentosExerciciosDto) {
 
-            Exercicio exercicio = this.exercicioService.sortearExercicio(exerciciosSorteados, mapeamentoExercicioDto.getGrupoMuscular());
-            exerciciosSorteados.add(exercicio);
+            for (int i = 0; i < mapeamentoExercicioDto.getQuantidadeExercicios(); i++) {
+                Exercicio exercicio = this.exercicioService.sortearExercicio(exerciciosSorteados, mapeamentoExercicioDto.getGrupoMuscular());
+                exerciciosSorteados.add(exercicio);
 
-            var treinoExercicio = TreinoExercicio.builder()
-                    .exercicio(exercicio)
-                    .build();
+                var treinoExercicio = TreinoExercicio.builder()
+                        .exercicio(exercicio)
+                        .build();
 
-            treinoExercicio.configurarTreinoExercicioPorObjetivo(treinoObjetivo, treinoExercicioAnterior);
+                treinoExercicio.configurarTreinoExercicioPorObjetivo(treinoObjetivo, treinoExercicioAnterior);
 
-            treinoExercicios.add(treinoExercicio);
-            treinoExercicioAnterior = treinoExercicio;
+                treinoExercicios.add(treinoExercicio);
+                treinoExercicioAnterior = treinoExercicio;
+            }
+
         }
 
         return treinoExercicios;
+    }
+
+    public MapeamentoTreinoDto gerarMapeamentoTreinoDtoDeUmTreinoExistente(Treino treino) {
+        var mapeamentoTreinoDto = MapeamentoTreinoDto.builder()
+                .nome(treino.getNome())
+                .ordem(treino.getOrdem())
+                .build();
+
+
+        List<MapeamentoExercicioDto> mapeamentosExerciciosDto = this.gerarMapeamentoExercicioDtoDeUmTreinoExercicioExistente(treino.getTreinoExercicios());
+        mapeamentoTreinoDto.setMapeamentosExercicios(mapeamentosExerciciosDto);
+
+        return mapeamentoTreinoDto;
+    }
+
+    //TODO: Refatorar & otimizar
+    private List<MapeamentoExercicioDto> gerarMapeamentoExercicioDtoDeUmTreinoExercicioExistente(List<TreinoExercicio> treinoExercicios) {
+
+        //O set garante que não deve repetir os grupos musculares
+        Set<GrupoMuscularEnum> gruposMusculares = new HashSet<>();
+
+        List<MapeamentoExercicioDto> mapeamentosExerciciosDto = new ArrayList<>();
+
+        for (TreinoExercicio treinoExercicio : treinoExercicios) {
+            gruposMusculares.add(treinoExercicio.getExercicio()
+                                                .getGrupoMuscular());
+        }
+
+        for (GrupoMuscularEnum grupoMuscular : gruposMusculares) {
+
+            var novoMapeamentoExercicioDto = MapeamentoExercicioDto.builder()
+                    .grupoMuscular(grupoMuscular)
+                    .build();
+
+            mapeamentosExerciciosDto.add(novoMapeamentoExercicioDto);
+
+            for (TreinoExercicio treinoExercicio : treinoExercicios) {
+
+                if (treinoExercicio.getExercicio()
+                                   .getGrupoMuscular() == grupoMuscular) {
+                    novoMapeamentoExercicioDto.incrementarQuantidadeExercicios();
+                }
+
+            }
+        }
+
+        return mapeamentosExerciciosDto;
     }
 }
