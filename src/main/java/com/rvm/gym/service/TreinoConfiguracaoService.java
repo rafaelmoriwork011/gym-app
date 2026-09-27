@@ -12,6 +12,7 @@ import com.rvm.gym.enums.TreinoObjetivoEnum;
 import com.rvm.gym.exception.BusinessException;
 import com.rvm.gym.mapper.internal.ConfiguracaoTreinoDtoMapper;
 import com.rvm.gym.repository.TreinoConfiguracaoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -106,7 +107,6 @@ public class TreinoConfiguracaoService {
 
     private TreinoConfiguracao findTreinoConfiguracaoByTreinoId(UUID treinoId) {
         return this.treinoConfiguracaoRepository.findById(treinoId)
-                                                .orElseThrow(() -> new BusinessException("Treino não encontrado."));
+                                                .orElseThrow(() -> new EntityNotFoundException("Treino não encontrado."));
     }
-
 }

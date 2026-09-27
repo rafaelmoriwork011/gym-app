@@ -2,8 +2,8 @@ package com.rvm.gym.service;
 
 import com.rvm.gym.entity.Exercicio;
 import com.rvm.gym.enums.GrupoMuscularEnum;
-import com.rvm.gym.exception.BusinessException;
 import com.rvm.gym.repository.ExercicioRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +28,10 @@ public class ExercicioService {
         List<Exercicio> candidatos = this.exercicioRepository.findByGrupoMuscularAndIdNotIn(grupoMuscularEnum, uuidsJaSorteados);
 
         if (candidatos.isEmpty()) {
-            throw new BusinessException("Exercicios insuficientes para a seleção.");
+            throw new EntityNotFoundException("Exercicios insuficientes para a seleção.");
         }
 
         return candidatos.get(ThreadLocalRandom.current()
                                                .nextInt(candidatos.size()));
     }
-
 }

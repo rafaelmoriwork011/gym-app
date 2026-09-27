@@ -3,6 +3,7 @@ package com.rvm.gym.exception;
 import com.rvm.gym.dto.error.ErrorResponseDto;
 import com.rvm.gym.dto.error.FieldErrorResponseDto;
 import com.rvm.gym.helper.ValidationExceptionHelper;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,4 +62,13 @@ public class GlobalExceptionHandler {
                              .body(dto);
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleEntityNotFound(EntityNotFoundException ex) {
+        ErrorResponseDto dto = ErrorResponseDto.builder()
+                .messages(List.of(ex.getMessage()))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .body(dto);
+    }
 }

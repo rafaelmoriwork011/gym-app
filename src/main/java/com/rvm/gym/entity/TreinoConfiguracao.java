@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,4 +106,9 @@ public class TreinoConfiguracao {
         this.dataAlteracao = LocalDateTime.now();
     }
 
+    public List<Treino> getTreinosOrdenados() {
+        return treinos.stream()
+                      .sorted(Comparator.comparingInt(Treino::getOrdem))
+                      .toList();
+    }
 }
