@@ -61,16 +61,21 @@ public class TreinoService {
             throw new BusinessException("Não foi encontrado nenhum mapeamento de treino para gerar os treinos");
         }
 
+        char letraTreino = 'A';
+        int ordemTreino = 1;
         for (MapeamentoTreinoDto mapeamentoTreinoDto : mapeamentosTreinos) {
 
             var treino = Treino.builder()
-                    .nome(mapeamentoTreinoDto.getNome())
-                    .ordem(mapeamentoTreinoDto.getOrdem())
+                    .nome(String.valueOf(letraTreino))
+                    .ordem(ordemTreino)
                     .build();
 
             List<TreinoExercicio> treinoExercicios = this.gerarTreinoExercicios(mapeamentoTreinoDto.getMapeamentosExercicios(), treinoObjetivo);
             treino.addTreinoExercicios(treinoExercicios);
             treinos.add(treino);
+
+            letraTreino++;
+            ordemTreino++;
         }
 
         return treinos;
