@@ -9,13 +9,12 @@ import org.mapstruct.Mapping;
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
-public interface MapeamentoExercicioDtoMapper {
+public abstract class MapeamentoExercicioDtoMapper {
 
     @Mapping(target = "grupoMuscular", source = "grupoMuscularId")
-    MapeamentoExercicioDto toMapeamentoExercicioDto(MapeamentoExercicioRequestDto mapeamentoExercicioDto);
+    public abstract MapeamentoExercicioDto toMapeamentoExercicioDto(MapeamentoExercicioRequestDto mapeamentoExercicioDto);
 
-    default GrupoMuscularEnum map(UUID id) {
+    protected GrupoMuscularEnum map(UUID id) {
         return GrupoMuscularEnum.fromId(id);
     }
-
 }

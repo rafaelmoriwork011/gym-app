@@ -5,7 +5,7 @@ import com.rvm.gym.dto.request.MapeamentoTreinoRequestDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = {MapeamentoExercicioDtoMapper.class})
-public interface MapeamentoTreinoDtoMapper {
+public abstract class MapeamentoTreinoDtoMapper {
 
-    MapeamentoTreinoDto toMapeamentoTreinoDto(MapeamentoTreinoRequestDto mapeamentoTreinoDto);
+    public abstract MapeamentoTreinoDto toMapeamentoTreinoDto(MapeamentoTreinoRequestDto mapeamentoTreinoDto);
 }

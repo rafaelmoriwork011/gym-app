@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {ExercicioResponseDtoMapper.class})
-public interface TreinoResponseDtoMapper {
+public abstract class TreinoResponseDtoMapper {
 
     @Mapping(target = "exercicios", source = "treinoExercicios")
-    TreinoResponseDto toTreinoResponseDto(Treino treino);
+    public abstract TreinoResponseDto toTreinoResponseDto(Treino treino);
 
 }
