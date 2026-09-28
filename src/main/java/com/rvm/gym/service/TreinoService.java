@@ -5,7 +5,6 @@ import com.rvm.gym.dto.internal.MapeamentoTreinoDto;
 import com.rvm.gym.dto.response.TreinoResponseDto;
 import com.rvm.gym.dto.response.TreinosResponseDto;
 import com.rvm.gym.entity.*;
-import com.rvm.gym.enums.GrupoMuscularEnum;
 import com.rvm.gym.enums.TreinoConfiguracaoStatusEnum;
 import com.rvm.gym.enums.TreinoObjetivoEnum;
 import com.rvm.gym.enums.TreinoStatusEnum;
@@ -21,7 +20,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -106,52 +107,6 @@ public class TreinoService {
         return treinoExercicios;
     }
 
-    public MapeamentoTreinoDto gerarMapeamentoTreinoDtoDeUmTreinoExistente(Treino treino) {
-        var mapeamentoTreinoDto = MapeamentoTreinoDto.builder()
-                .nome(treino.getNome())
-                .ordem(treino.getOrdem())
-                .build();
-
-
-        List<MapeamentoExercicioDto> mapeamentosExerciciosDto = this.gerarMapeamentoExercicioDtoDeUmTreinoExercicioExistente(treino.getTreinoExercicios());
-        mapeamentoTreinoDto.setMapeamentosExercicios(mapeamentosExerciciosDto);
-
-        return mapeamentoTreinoDto;
-    }
-
-    private List<MapeamentoExercicioDto> gerarMapeamentoExercicioDtoDeUmTreinoExercicioExistente(List<TreinoExercicio> treinoExercicios) {
-
-        //O set garante que não deve repetir os grupos musculares
-        Set<GrupoMuscularEnum> gruposMusculares = new HashSet<>();
-
-        List<MapeamentoExercicioDto> mapeamentosExerciciosDto = new ArrayList<>();
-
-        for (TreinoExercicio treinoExercicio : treinoExercicios) {
-            gruposMusculares.add(treinoExercicio.getExercicio()
-                                                .getGrupoMuscular());
-        }
-
-        for (GrupoMuscularEnum grupoMuscular : gruposMusculares) {
-
-            var novoMapeamentoExercicioDto = MapeamentoExercicioDto.builder()
-                    .grupoMuscular(grupoMuscular)
-                    .build();
-
-            mapeamentosExerciciosDto.add(novoMapeamentoExercicioDto);
-
-            for (TreinoExercicio treinoExercicio : treinoExercicios) {
-
-                if (treinoExercicio.getExercicio()
-                                   .getGrupoMuscular() == grupoMuscular) {
-                    novoMapeamentoExercicioDto.incrementarQuantidadeExercicios();
-                }
-
-            }
-        }
-
-        return mapeamentosExerciciosDto;
-    }
-
     public TreinoResponseDto buscarTreinoAtual(UUID treinoConfiguracaoId) {
 
         TreinoConfiguracao treinoConfig = this.treinoConfiguracaoRepository.findById(treinoConfiguracaoId)
@@ -172,7 +127,7 @@ public class TreinoService {
                                             .map(Treino::getId)
                                             .toList();
 
-        var treinoExecucao = this.treinoExecucaoRepository.findFirstByTreinoIdInOrderByDataOcorrenciaDesc(idsTreinos);
+        TreinoExecucao treinoExecucao = this.treinoExecucaoRepository.findFirstByTreinoIdInOrderByDataOcorrenciaDesc(idsTreinos);
 
         List<Treino> treinosOrdenados = treinoConfig.getTreinosOrdenados();
         if (treinoExecucao == null) {

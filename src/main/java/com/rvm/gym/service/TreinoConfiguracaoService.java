@@ -11,6 +11,7 @@ import com.rvm.gym.enums.TreinoConfiguracaoStatusEnum;
 import com.rvm.gym.enums.TreinoObjetivoEnum;
 import com.rvm.gym.exception.BusinessException;
 import com.rvm.gym.mapper.internal.ConfiguracaoTreinoDtoMapper;
+import com.rvm.gym.mapper.internal.MapeamentoTreinoDtoMapper;
 import com.rvm.gym.repository.TreinoConfiguracaoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -29,6 +30,7 @@ public class TreinoConfiguracaoService {
     private final TreinoService treinoService;
     private final TreinoConfiguracaoRepository treinoConfiguracaoRepository;
     private final ConfiguracaoTreinoDtoMapper configuracaoTreinoDtoMapper;
+    private final MapeamentoTreinoDtoMapper mapeamentoTreinoDtoMapper;
 
     @Transactional
     public void configurar(ConfiguracaoTreinoRequestDto configuracaoTreinoRequestDto) {
@@ -58,7 +60,7 @@ public class TreinoConfiguracaoService {
 
         List<MapeamentoTreinoDto> mapeamentoTreinosDto = new ArrayList<>();
         for (Treino treino : treinoConfigAtual.getTreinos()) {
-            MapeamentoTreinoDto mapeamentoTreinoDto = this.treinoService.gerarMapeamentoTreinoDtoDeUmTreinoExistente(treino);
+            MapeamentoTreinoDto mapeamentoTreinoDto = this.mapeamentoTreinoDtoMapper.toMapeamentoTreinoDto(treino);
             mapeamentoTreinosDto.add(mapeamentoTreinoDto);
         }
         novoTreinoConfigDto.setMapeamentosTreinos(mapeamentoTreinosDto);
