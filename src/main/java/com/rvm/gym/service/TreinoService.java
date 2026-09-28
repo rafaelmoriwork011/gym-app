@@ -2,7 +2,6 @@ package com.rvm.gym.service;
 
 import com.rvm.gym.dto.internal.MapeamentoExercicioDto;
 import com.rvm.gym.dto.internal.MapeamentoTreinoDto;
-import com.rvm.gym.dto.response.ExercicioResponseDto;
 import com.rvm.gym.dto.response.TreinoResponseDto;
 import com.rvm.gym.dto.response.TreinosResponseDto;
 import com.rvm.gym.entity.*;
@@ -11,6 +10,8 @@ import com.rvm.gym.enums.TreinoConfiguracaoStatusEnum;
 import com.rvm.gym.enums.TreinoObjetivoEnum;
 import com.rvm.gym.enums.TreinoStatusEnum;
 import com.rvm.gym.exception.BusinessException;
+import com.rvm.gym.mapper.response.TreinoResponseDtoMapper;
+import com.rvm.gym.mapper.response.TreinosResponseDtoMapper;
 import com.rvm.gym.repository.TreinoConfiguracaoRepository;
 import com.rvm.gym.repository.TreinoExecucaoRepository;
 import com.rvm.gym.repository.TreinoRepository;
@@ -30,6 +31,8 @@ public class TreinoService {
     private final TreinoRepository treinoRepository;
     private final TreinoExecucaoRepository treinoExecucaoRepository;
     private final TreinoConfiguracaoRepository treinoConfiguracaoRepository;
+    private final TreinosResponseDtoMapper treinosResponseDtoMapper;
+    private final TreinoResponseDtoMapper treinoResponseDtoMapper;
 
     @Transactional
     public void finalizarTreino(UUID treinoId) {
@@ -160,24 +163,7 @@ public class TreinoService {
 
         Treino proximoTreino = this.buscarProximoTreino(treinoConfig);
 
-        var treinoAtualResponseDto = TreinoResponseDto.builder()
-                .id(proximoTreino.getId())
-                .nome(proximoTreino.getNome())
-                .build();
-
-        for (TreinoExercicio treinoExercicio : proximoTreino.getTreinoExercicios()) {
-            var exercicioDto = ExercicioResponseDto.builder()
-                    .nome(treinoExercicio.getExercicio()
-                                         .getNome())
-                    .grupoMuscular(treinoExercicio.getExercicio()
-                                                  .getGrupoMuscular()
-                                                  .getDescricao())
-                    .build();
-
-            treinoAtualResponseDto.addExercicio(exercicioDto);
-        }
-
-        return treinoAtualResponseDto;
+        return this.treinoResponseDtoMapper.toTreinoResponseDto(proximoTreino);
     }
 
     private Treino buscarProximoTreino(TreinoConfiguracao treinoConfig) {
@@ -192,7 +178,6 @@ public class TreinoService {
         if (treinoExecucao == null) {
             return treinosOrdenados.getFirst();
         }
-
 
         Treino ultimoTreinoExecutado = treinoExecucao.getTreino();
 
@@ -211,32 +196,7 @@ public class TreinoService {
 
         TreinoConfiguracao treinoConfig = this.treinoConfiguracaoRepository.findById(treinoConfiguracaoId)
                                                                            .orElseThrow(() -> new EntityNotFoundException("Configuração não encontrado"));
-        List<TreinoResponseDto> treinosResponseDto = new ArrayList<>();
 
-        for (Treino treino : treinoConfig.getTreinos()) {
-            var treinoResponseDto = TreinoResponseDto.builder()
-                    .id(treino.getId())
-                    .nome(treino.getNome())
-                    .build();
-
-            for (TreinoExercicio treinoExercicio : treino.getTreinoExercicios()) {
-                var exercicioDto = ExercicioResponseDto.builder()
-                        .nome(treinoExercicio.getExercicio()
-                                             .getNome())
-                        .grupoMuscular(treinoExercicio.getExercicio()
-                                                      .getGrupoMuscular()
-                                                      .getDescricao())
-                        .build();
-
-                treinoResponseDto.addExercicio(exercicioDto);
-            }
-
-            treinosResponseDto.add(treinoResponseDto);
-        }
-
-
-        return TreinosResponseDto.builder()
-                .treinos(treinosResponseDto)
-                .build();
+        return this.treinosResponseDtoMapper.toTreinosResponseDto(treinoConfig.getTreinos());
     }
 }

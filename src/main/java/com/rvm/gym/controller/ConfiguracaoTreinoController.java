@@ -42,5 +42,4 @@ public class ConfiguracaoTreinoController {
 
         return ResponseEntity.ok(validacaoTreinoRenovacaoResponseDto);
     }
-
 }
